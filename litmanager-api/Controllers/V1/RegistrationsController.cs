@@ -80,8 +80,25 @@ namespace litmanager_api.Controllers.V1
         [HttpGet(ApiRoutes.Registration.Approve)]
         public async Task<IActionResult> ApproveAsync([FromRoute]string registrationId)
         {
+            //Get the registration to approve
+            var registration = await _registeredService.GetAsync(registrationId);
+            
+            //Map the registration to User
+            var user = _mapper.Map<User>(registration); 
 
+            //Add the user to the user table and check if successful
+            var result = await _userService.AddAsync(user);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+            //Remove registration from database by denying it
+            await DenyAsync(registrationId);
+            return Ok();
+            
         }
+
         [HttpGet(ApiRoutes.Registration.Deny)]
         public async Task<IActionResult> DenyAsync([FromRoute]string registrationId)
         {

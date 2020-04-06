@@ -10,6 +10,7 @@ namespace litmanager_api.Mapping
         public EntityToResponse()
         {
             CreateMap<Registration, GetResponse>();
+            CreateMap<Registration, User>();
         }
     }
 }
