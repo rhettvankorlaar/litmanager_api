@@ -31,9 +31,8 @@ namespace litmanager_api.Services
             //Map object to registration
             var registration = _mapper.Map<Registration>(objectToCreate);
 
-            //Salt and hash the password
-            registration.PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(objectToCreate.Password);
-            
+            //Normalize email
+            registration.Email = registration.Email.ToUpper();
             //Add to the database
             _context.Registrations.Add(registration);
             
@@ -45,13 +44,13 @@ namespace litmanager_api.Services
         public async Task<List<Registration>> GetAllAsync()
         {
             //Return a list of all registrations
-            return await _context.Registrations.ToListAsync();
+            return await _context.Registrations.Include(_ => _.UserType).ToListAsync();
         }
 
         public async Task<Registration> GetAsync(string idToGet)
         {
             //Return the registration or null
-            return await _context.Registrations.SingleOrDefaultAsync(_=>_.Id == idToGet);
+            return await _context.Registrations.Include(_=>_.UserType).SingleOrDefaultAsync(_ => _.Id == idToGet);
         }
         public async Task<bool> UpdateAsync(string idToGet, Registration objectToUpdate)
         {

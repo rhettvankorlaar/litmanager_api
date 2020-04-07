@@ -14,7 +14,6 @@ namespace litmanager_api.Domain
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string PasswordHash { get; set; }
         public Guid UserTypeId { get; set; }
 
         [ForeignKey(nameof(UserTypeId))]
