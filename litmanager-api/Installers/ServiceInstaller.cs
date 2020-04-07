@@ -22,8 +22,10 @@ namespace litmanager_api.Installers
             }));
 
             services.AddAutoMapper(typeof(Startup));
+
             services.AddScoped<RegistrationService>();
             services.AddScoped<UserService>();
+            services.AddScoped<UserTypeService>();
         }
     }
 }

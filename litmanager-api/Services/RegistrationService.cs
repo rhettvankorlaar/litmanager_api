@@ -24,7 +24,7 @@ namespace litmanager_api.Services
         public async Task<bool> AddAsync(CreateRequest objectToCreate)
         {
             //Check if the email or id already exists in the database.
-            if(_context.Registrations.Any(_=>_.Id == objectToCreate.Id || _.Email == objectToCreate.Email))
+            if(await _context.Registrations.AnyAsync(_=>_.Id == objectToCreate.Id || _.Email == objectToCreate.Email))
             {
                 return false;
             }

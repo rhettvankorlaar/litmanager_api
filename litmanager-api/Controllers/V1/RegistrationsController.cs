@@ -81,7 +81,7 @@ namespace litmanager_api.Controllers.V1
                 return NotFound();
             }
             //return the updated user
-            return Ok(_mapper.Map<GetResponse>(registration));
+            return await GetAsync(registrationId);
         }
 
 
