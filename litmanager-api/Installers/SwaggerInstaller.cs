@@ -22,7 +22,7 @@ namespace litmanager_api.Installers
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "LITManager API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "LIT Manager", Version = "v1" });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
