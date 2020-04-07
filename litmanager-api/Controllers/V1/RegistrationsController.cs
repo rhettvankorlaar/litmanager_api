@@ -11,6 +11,7 @@ using litmanager_api.Contracts.V1;
 using litmanager_api.Contracts.V1.Requests.Registration;
 using AutoMapper;
 using litmanager_api.Contracts.V1.Responses.Registration;
+using litmanager_api.Mail;
 
 namespace litmanager_api.Controllers.V1
 {
@@ -20,13 +21,15 @@ namespace litmanager_api.Controllers.V1
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly UserTypeService _userTypeService;
+        private readonly IMailSender _mail;
 
-        public RegistrationsController(RegistrationService registrationService, UserService userService,  IMapper mapper, UserTypeService userTypeService)
+        public RegistrationsController(RegistrationService registrationService, UserService userService,  IMapper mapper, UserTypeService userTypeService, IMailSender mail)
         {
             _registeredService = registrationService;
             _userService = userService;
             _mapper = mapper;
             _userTypeService = userTypeService;
+            _mail = mail;
         }
 
         [HttpPost(ApiRoutes.Registration.Create)]
@@ -38,16 +41,35 @@ namespace litmanager_api.Controllers.V1
             {
                 return BadRequest();
             }
+            //check if the user exists in User table
+            if(await _userService.UserExists(request.Id,request.Email))
+            {
+                return BadRequest();
+            }
+
             //Create a Registration using the service and check if successful
             var result = await _registeredService.AddAsync(request);
             if (!result)
             {
-                return NoContent();
+                return BadRequest();
             }
             //Get the location of the created object and send it with the mapped object
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Registration.Get.Replace("{registrationId}", request.Id);
-            return Created(locationUri, _mapper.Map<GetResponse>(request));
+            var registration = _mapper.Map<GetResponse>(request);
+
+            var receiver = new Receiver
+            {
+                Email = registration.Email,
+                FirstName = registration.FirstName,
+                LastName = registration.LastName
+            };
+            //send registered mail to User
+            //TODO Add MailTemplate 
+            //Send mail with ability to confirm email.
+            SendMail(receiver, "REGISTERED", "content");
+
+            return Created(locationUri, registration);
         }
 
         [HttpGet(ApiRoutes.Registration.Get)]
@@ -111,6 +133,19 @@ namespace litmanager_api.Controllers.V1
             }
             //Remove registration from database by denying it
             await DenyAsync(registrationId);
+
+            
+            var receiver = new Receiver
+            {
+                 Email = user.Email,
+                 FirstName = user.FirstName,
+                 LastName = user.LastName
+            };
+            //send approved mail to User
+            //TODO Add MailTemplate 
+            //Send mail with ability to set password.
+            SendMail(receiver, "APPROVE","content");
+
             return Ok();
             
         }
@@ -128,5 +163,17 @@ namespace litmanager_api.Controllers.V1
             return Ok();
         }
 
+        private void SendMail(Receiver receiver, string subject, string content)
+        {
+            try
+            {
+                _mail.SendMail(receiver, subject,content);
+            }
+            catch
+            {
+                //Error
+            }
+
+        }
     }
 }

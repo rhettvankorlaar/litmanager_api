@@ -2,6 +2,7 @@
 using litmanager_api.Contracts.V1.Requests.User;
 using litmanager_api.Contracts.V1.Responses.User;
 using litmanager_api.Domain;
+using litmanager_api.Mail;
 
 namespace litmanager_api.Mapping
 {
@@ -13,6 +14,7 @@ namespace litmanager_api.Mapping
             CreateMap<UpdateRequest, User>();
 
             CreateMap<User, GetResponse>();
+            CreateMap<User, Receiver>();
 
 
         }

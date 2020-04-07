@@ -4,6 +4,7 @@ using litmanager_api.Contracts.V1.Requests;
 using litmanager_api.Contracts.V1.Requests.User;
 using litmanager_api.Contracts.V1.Responses.User;
 using litmanager_api.Domain;
+using litmanager_api.Mail;
 using litmanager_api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,11 +19,13 @@ namespace litmanager_api.Controllers.V1
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly UserTypeService _userTypeService;
-        public UserController(UserService userService, IMapper mapper, UserTypeService userTypeService)
+        private readonly IMailSender _mail;
+        public UserController(UserService userService, IMapper mapper, UserTypeService userTypeService, IMailSender mail)
         {
             _userService = userService;
             _mapper = mapper;
             _userTypeService = userTypeService;
+            _mail = mail;
         }
 
         [HttpPost(ApiRoutes.User.Create)]
@@ -120,7 +123,7 @@ namespace litmanager_api.Controllers.V1
             {
                 return BadRequest();
             }
-
+            HandleEmailChange(user);
             //return mapped GetAsync
             return await GetAsync(userId);
         }
@@ -181,7 +184,7 @@ namespace litmanager_api.Controllers.V1
 
             //Check if type exists
             var type = await _userTypeService.GetAsync(patch.UserTypeId);
-            if(type == null)
+            if (type == null)
             {
                 return BadRequest();
             }
@@ -267,6 +270,24 @@ namespace litmanager_api.Controllers.V1
             return true;
         }
 
+        private void HandleEmailChange(User user)
+        {
+            var receiver = new Receiver
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+            //send mail with verifytoken
+            try
+            {
+                _mail.SendMail(receiver, "EMAIL CHANGED", "content");
+            }
+            catch
+            {
+                //Error
+            }
+        }
 
     }
 
