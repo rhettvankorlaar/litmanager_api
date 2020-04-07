@@ -19,7 +19,7 @@ namespace litmanager_api.Contracts.V1.Requests.Registration
 
         public string LastName { get; set; }
 
-        public UserType UserType { get; set; }
+        public Guid UserTypeId { get; set; }
 
         [Required(ErrorMessage = "Wachtwoord is verplicht.")]
         [DataType(DataType.Password)]
