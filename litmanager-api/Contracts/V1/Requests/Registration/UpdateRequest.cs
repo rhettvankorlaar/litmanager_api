@@ -9,10 +9,6 @@ namespace litmanager_api.Contracts.V1.Requests.Registration
 {
     public class UpdateRequest
     {
-        [Required(ErrorMessage = "Id is verplicht.")]
-        public string Id { get; set; }
-
-        [Required(ErrorMessage = "Email is verplicht.")]
         public string Email { get; set; }
 
         public string FirstName { get; set; }
