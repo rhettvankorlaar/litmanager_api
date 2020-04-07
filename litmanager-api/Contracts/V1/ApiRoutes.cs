@@ -32,8 +32,6 @@ namespace litmanager_api.Contracts.V1
             public const string PatchPassword = Base + "/user/change/password/{userId}";
             public const string PatchIsEnabled = Base + "/user/change/isenabled/{userId}";
             public const string PatchIsAdmin = Base + "/user/change/isadmin/{userId}";
-
-
         }
 
         public static class Registration
@@ -44,6 +42,15 @@ namespace litmanager_api.Contracts.V1
             public const string Update = Base + "/registration/{registrationId}";
             public const string Approve = Base + "/registration/approve/{registrationId}";
             public const string Deny = Base + "/registration/deny/{registrationId}";
+        }
+
+        public static class UserType
+        {
+            public const string GetAll = Base + "/usertypes";
+            public const string Get = Base + "/usertype/{userTypeId}";
+            public const string Create = Base + "/usertype";
+            public const string Update = Base + "/usertype/{userTypeId}";
+            public const string Delete = Base + "/usertype/{userTypeId}";
         }
     }
 }
