@@ -53,7 +53,7 @@ namespace litmanager_api.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Registration.GetAll)]
-        public async Task<IActionResult> GetAllAsync([FromRoute]string registrationId)
+        public async Task<IActionResult> GetAllAsync()
         {
             var result = await _registeredService.GetAllAsync();
             if (result == null)
