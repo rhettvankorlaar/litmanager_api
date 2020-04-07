@@ -24,6 +24,16 @@ namespace litmanager_api.Contracts.V1
             public const string Create = Base + "/user";
             public const string Update = Base + "/user/{userId}";
             public const string Delete = Base + "/user/{userId}";
+
+            public const string PatchEmail = Base + "/user/change/email/{userId}";
+            public const string PatchFirstName = Base + "/user/change/firstname/{userId}";
+            public const string PatchLastName = Base + "/user/change/lastname/{userId}";
+            public const string PatchUserType = Base + "/user/change/usertype/{userId}";
+            public const string PatchPassword = Base + "/user/change/password/{userId}";
+            public const string PatchIsEnabled = Base + "/user/change/isenabled/{userId}";
+            public const string PatchIsAdmin = Base + "/user/change/isadmin/{userId}";
+
+
         }
 
         public static class Registration

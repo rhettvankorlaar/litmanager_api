@@ -1,5 +1,6 @@
 ﻿using litmanager_api.Contracts.V1.Requests.User;
 using litmanager_api.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,24 +30,51 @@ namespace litmanager_api.Services
             return created > 0;
         }
 
-        public Task<bool> DeleteAsync(string idToGet)
+        public async Task<User> GetAsync(string idToGet)
         {
-            throw new NotImplementedException();
+            //Returns a user or null
+            return await _context.Users.SingleOrDefaultAsync(_ => _.Id == idToGet);
         }
 
-        public Task<List<User>> GetAllAsync()
+        public async Task<List<User>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            //Return a list of all users
+            return await _context.Users.ToListAsync();
+        }
+        public async Task<bool> UpdateAsync(string idToGet, User objectToUpdate)
+        {
+            //Check if the User exists
+            var userToUpdate = await GetAsync(idToGet);
+            if (userToUpdate == null)
+            {
+                return false;
+            }
+
+            //Pass the update object the id required to update
+            objectToUpdate.Id = idToGet;
+
+            //Update and save to database
+            _context.Users.Update(objectToUpdate);
+            var updated = await _context.SaveChangesAsync();
+
+            //return true if there are more than 0 changes
+            return updated > 0;
+        }
+        public async Task<bool> DeleteAsync(string idToGet)
+        {
+            //Check if the User exists
+            var userToDelete = await GetAsync(idToGet);
+            if (userToDelete == null)
+            {
+                return false;
+            }
+            //Remove and save to database
+            _context.Users.Remove(userToDelete);
+            var removed = await _context.SaveChangesAsync();
+
+            //return true if there are more than 0 changes
+            return removed > 0;
         }
 
-        public Task<User> GetAsync(string idToGet)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(string idToGet, User objectToUpdate)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
