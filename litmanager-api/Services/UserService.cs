@@ -21,7 +21,7 @@ namespace litmanager_api.Services
         public async Task<bool> AddAsync(User objectToCreate)
         {
             //Check if the email or id already exists in the database.
-            if (await _context.Users.AnyAsync(_ => _.Id == objectToCreate.Id || _.Email == objectToCreate.Email))
+            if(await UserExists(objectToCreate.Id, objectToCreate.Email))
             {
                 return false;
             }
@@ -106,5 +106,13 @@ namespace litmanager_api.Services
             return await _context.Users.Include(_ => _.UserType).SingleOrDefaultAsync(_ => _.Email == email.ToUpper());
         }
 
+        public async Task<bool> UserExists(string id, string email)
+        {
+            if (await _context.Users.AnyAsync(_ => _.Id == id || _.Email == email))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
