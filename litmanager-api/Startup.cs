@@ -37,6 +37,8 @@ namespace litmanager_api
                 app.UseHsts();
             }
 
+            app.UseCors("MyPolicy");
+
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
 
