@@ -11,7 +11,6 @@ using litmanager_api.Contracts.V1;
 using litmanager_api.Contracts.V1.Requests.Registration;
 using AutoMapper;
 using litmanager_api.Contracts.V1.Responses.Registration;
-using System.Security.Policy;
 
 namespace litmanager_api.Controllers.V1
 {
@@ -31,11 +30,13 @@ namespace litmanager_api.Controllers.V1
         [HttpPost(ApiRoutes.Registration.Create)]
         public async Task<IActionResult> CreateAsync([FromBody]CreateRequest request)
         {
+            //Create a Registration using the service and check if successful
             var result = await _registeredService.AddAsync(request);
             if (!result)
             {
                 return NoContent();
             }
+            //Get the location of the created object and send it with the mapped object
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Registration.Get.Replace("{registrationId}", request.Id);
             return Created(locationUri, _mapper.Map<GetResponse>(request));
@@ -44,35 +45,42 @@ namespace litmanager_api.Controllers.V1
         [HttpGet(ApiRoutes.Registration.Get)]
         public async Task<IActionResult> GetAsync([FromRoute]string registrationId)
         {
+            //Get Registration from the service and check if its null
             var result = await _registeredService.GetAsync(registrationId);
             if(result == null)
             {
                 return NotFound();
             }
+            //return mapped Registration
             return Ok(_mapper.Map<GetResponse>(result));
         }
 
         [HttpGet(ApiRoutes.Registration.GetAll)]
         public async Task<IActionResult> GetAllAsync()
         {
+            //Get all Registraions from service if null return noContent
             var result = await _registeredService.GetAllAsync();
             if (result == null)
             {
                 return NotFound();
             }
+            //return a mapped list
             return Ok(_mapper.Map<List<GetResponse>>(result));
         }
 
         [HttpPut(ApiRoutes.Registration.Update)]
         public async Task<IActionResult> UpdateAsync([FromRoute]string registrationId, [FromBody]UpdateRequest request)
         {
+            //Map the update request to a registration
             var registration = _mapper.Map<Registration>(request);
+            
+            //Try to update the user and check if its successfull
             var result = await _registeredService.UpdateAsync(registrationId, registration);
             if (!result)
             {
                 return NotFound();
             }
-
+            //return the updated user
             return Ok(_mapper.Map<GetResponse>(registration));
         }
 
@@ -102,12 +110,13 @@ namespace litmanager_api.Controllers.V1
         [HttpGet(ApiRoutes.Registration.Deny)]
         public async Task<IActionResult> DenyAsync([FromRoute]string registrationId)
         {
+            //Delete Registration with service and check if successful
             var result = await _registeredService.DeleteAsync(registrationId);
             if (!result)
             {
                 return NotFound();
             }
-
+            //return successfull
             return Ok();
         }
 
