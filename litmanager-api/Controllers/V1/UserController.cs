@@ -17,10 +17,12 @@ namespace litmanager_api.Controllers.V1
     {
         private readonly UserService _userService;
         private readonly IMapper _mapper;
-        public UserController(UserService userService, IMapper mapper)
+        private readonly UserTypeService _userTypeService;
+        public UserController(UserService userService, IMapper mapper, UserTypeService userTypeService)
         {
             _userService = userService;
             _mapper = mapper;
+            _userTypeService = userTypeService;
         }
 
         [HttpPost(ApiRoutes.User.Create)]
@@ -28,6 +30,12 @@ namespace litmanager_api.Controllers.V1
         {
             //Map request to User and add it using service and check if successful
             var user = _mapper.Map<User>(request);
+
+            //Normalize email
+            user.Email = user.Email.ToUpper();
+
+            //User is enabled as default
+            user.IsEnabled = true;
             var result = await _userService.AddAsync(user);
             if (!result)
             {
@@ -62,7 +70,8 @@ namespace litmanager_api.Controllers.V1
                 return NotFound();
             }
             //return a mapped list
-            return Ok(_mapper.Map<List<GetResponse>>(result));
+            var x = _mapper.Map<List<GetResponse>>(result);
+            return Ok(x);
         }
 
         [HttpPut(ApiRoutes.User.Update)]
@@ -107,7 +116,7 @@ namespace litmanager_api.Controllers.V1
             user.Email = patch.Email;
 
             //Update the User object and check if successful
-            if (await UpdateUser(userId, user))
+            if (await UpdateUser(userId, user) == false)
             {
                 return BadRequest();
             }
@@ -129,7 +138,7 @@ namespace litmanager_api.Controllers.V1
             user.FirstName = patch.FirstName;
 
             //Update the User object and check if successful
-            if (await UpdateUser(userId, user))
+            if (await UpdateUser(userId, user) == false)
             {
                 return BadRequest();
             }
@@ -151,7 +160,7 @@ namespace litmanager_api.Controllers.V1
             user.LastName = patch.LastName;
 
             //Update the User object and check if successful
-            if (await UpdateUser(userId, user))
+            if (await UpdateUser(userId, user) == false)
             {
                 return BadRequest();
             }
@@ -169,11 +178,19 @@ namespace litmanager_api.Controllers.V1
             {
                 return NotFound();
             }
+
+            //Check if type exists
+            var type = await _userTypeService.GetAsync(patch.UserTypeId);
+            if(type == null)
+            {
+                return BadRequest();
+            }
+
             //Update User with patch
             user.UserTypeId = patch.UserTypeId;
 
             //Update the User object and check if successful
-            if (await UpdateUser(userId, user))
+            if (await UpdateUser(userId, user) == false)
             {
                 return BadRequest();
             }
@@ -185,23 +202,14 @@ namespace litmanager_api.Controllers.V1
         [HttpPatch(ApiRoutes.User.PatchPassword)]
         public async Task<IActionResult> PatchPassword([FromRoute]string userId, [FromBody]PatchPassword patch)
         {
-            //Check if the User exists
-            var user = await _userService.GetAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            //Encrypt and update password
-            user.PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(patch.Password);
-
-            //Update the User object and check if successful
-            if (await UpdateUser(userId, user))
+            var result = await _userService.ChangePasswordAsync(userId, patch.Password);
+            if (!result)
             {
                 return BadRequest();
             }
 
             //return mapped GetAsync
-            return await GetAsync(userId);
+            return Ok();
         }
 
         [HttpPatch(ApiRoutes.User.PatchIsEnabled)]
@@ -214,10 +222,10 @@ namespace litmanager_api.Controllers.V1
                 return NotFound();
             }
             //Update User with patch
-            user.FirstName = patch.FirstName;
+            user.IsEnabled = patch.IsEnabled;
 
             //Update the User object and check if successful
-            if (await UpdateUser(userId, user))
+            if (await UpdateUser(userId, user) == false)
             {
                 return BadRequest();
             }
@@ -236,10 +244,10 @@ namespace litmanager_api.Controllers.V1
                 return NotFound();
             }
             //Update User with patch
-            user.FirstName = patch.FirstName;
+            user.IsAdmin = patch.IsAdmin;
 
             //Update the User object and check if successful
-            if (await UpdateUser(userId, user))
+            if (await UpdateUser(userId, user) == false)
             {
                 return BadRequest();
             }

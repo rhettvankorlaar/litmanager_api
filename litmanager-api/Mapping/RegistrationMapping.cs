@@ -13,6 +13,8 @@ namespace litmanager_api.Mapping
             CreateMap<CreateRequest, Registration>();
             CreateMap<UpdateRequest, Registration>();
 
+            CreateMap<CreateRequest, GetResponse>();
+
             CreateMap<Registration, GetResponse>();
             CreateMap<Registration, User>();
         }

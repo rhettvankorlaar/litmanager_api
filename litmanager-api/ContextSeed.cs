@@ -17,7 +17,7 @@ namespace API
         {
             useInMemory = _useInMemory;
         }
-        public static async Task SeedAsync(IServiceProvider services)
+        public static void SeedAsync(IServiceProvider services)
         {
             var _context = services.GetRequiredService<DataContext>();
 
@@ -29,26 +29,7 @@ namespace API
             if (!useInMemory.Value)
             {
                 _context.Database.Migrate();
-            }
-
-            var user = new User
-            {
-                 Id = "220266",
-                 FirstName = "Rhett",
-                 LastName = "van Korlaar",
-                 Email = "rhettvankorlaar@gmail.com",
-                 IsAdmin = true,
-                 IsEnabled = true
-            };
-
-            var existingUser = _context.Users.Where(_ => _.Email == user.Email).FirstOrDefault();
-
-            if(existingUser == null)
-            {
-                _context.Add(user);
-            }
-
-            await _context.SaveChangesAsync();
+            } 
         }
     }
 }

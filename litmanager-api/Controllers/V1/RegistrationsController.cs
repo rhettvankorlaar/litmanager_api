@@ -19,17 +19,25 @@ namespace litmanager_api.Controllers.V1
         private readonly RegistrationService _registeredService;
         private readonly UserService _userService;
         private readonly IMapper _mapper;
+        private readonly UserTypeService _userTypeService;
 
-        public RegistrationsController(RegistrationService registrationService, UserService userService,  IMapper mapper)
+        public RegistrationsController(RegistrationService registrationService, UserService userService,  IMapper mapper, UserTypeService userTypeService)
         {
             _registeredService = registrationService;
             _userService = userService;
             _mapper = mapper;
+            _userTypeService = userTypeService;
         }
 
         [HttpPost(ApiRoutes.Registration.Create)]
         public async Task<IActionResult> CreateAsync([FromBody]CreateRequest request)
         {
+            //Check if type exists
+            var type = await _userTypeService.GetAsync(request.UserTypeId);
+            if (type == null)
+            {
+                return BadRequest();
+            }
             //Create a Registration using the service and check if successful
             var result = await _registeredService.AddAsync(request);
             if (!result)

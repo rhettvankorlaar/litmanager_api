@@ -26,6 +26,8 @@ namespace litmanager_api.Installers
             services.AddScoped<RegistrationService>();
             services.AddScoped<UserService>();
             services.AddScoped<UserTypeService>();
+            services.AddScoped<IdentityService>();
+            services.AddScoped<SecurityService>();
         }
     }
 }
