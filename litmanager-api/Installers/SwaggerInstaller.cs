@@ -15,6 +15,11 @@ namespace litmanager_api.Installers
         {
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.ConfigureSwaggerGen(options => 
+            {
+                options.CustomSchemaIds(x => x.FullName);
+            });
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "LITManager API", Version = "v1" });
