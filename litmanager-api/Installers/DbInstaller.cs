@@ -13,6 +13,13 @@ namespace litmanager_api.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration Configuration)
         {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddDbContext<DataContext>(options =>
             {
                 ContextSeed.Init();
