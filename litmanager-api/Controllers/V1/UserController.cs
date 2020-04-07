@@ -170,7 +170,7 @@ namespace litmanager_api.Controllers.V1
                 return NotFound();
             }
             //Update User with patch
-            user.UserType = patch.UserType;
+            user.UserTypeId = patch.UserTypeId;
 
             //Update the User object and check if successful
             if (await UpdateUser(userId, user))
