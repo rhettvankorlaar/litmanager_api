@@ -18,5 +18,13 @@ namespace litmanager_api.Domain
 
         [ForeignKey(nameof(UserTypeId))]
         public UserType UserType { get; set; }
+
+        public string FullName
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
     }
 }
