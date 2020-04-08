@@ -14,5 +14,6 @@ namespace litmanager_api.Contracts.V1.Responses.User
         public Guid UserTypeId { get; set; }
         public Domain.UserType UserType { get; set; }
         public bool IsEnabled { get; set; }
+        public string FullName {get; set;}
     }
 }

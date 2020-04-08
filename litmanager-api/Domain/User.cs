@@ -22,5 +22,11 @@ namespace litmanager_api.Domain
         [ForeignKey(nameof(UserTypeId))]
         public UserType UserType { get; set; }
         public ICollection<UserActivity> UserActivities { get; set; }
+        [NotMapped]
+        public string FullName { get
+            {
+                return FirstName + " " + LastName;
+            } 
+        }
     }
 }
