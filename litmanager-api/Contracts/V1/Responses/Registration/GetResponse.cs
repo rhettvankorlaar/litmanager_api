@@ -13,5 +13,6 @@ namespace litmanager_api.Contracts.V1.Responses.Registration
         public string LastName { get; set; }
         public Guid UserTypeId { get; set; }
         public Domain.UserType UserType { get; set; }
+        public string FullName { get; set; }
     }
 }
