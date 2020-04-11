@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Newtonsoft;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,7 @@ namespace litmanager_api.Installers
         public void InstallServices(IServiceCollection services, IConfiguration Configuration)
         {
             services.AddMvc(option => option.EnableEndpointRouting = false)
+                .AddNewtonsoftJson()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.ConfigureSwaggerGen(options => 
             {

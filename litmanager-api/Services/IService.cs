@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations.Operations;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,6 @@ namespace litmanager_api.Services
         public Task<TGet> GetAsync(TId idToGet);
         public Task<List<TGet>> GetAllAsync();
         public Task<bool> DeleteAsync(TId idToGet);
-        public Task<bool> UpdateAsync(TId idToGet, TGet objectToUpdate);
+        public Task<bool> UpdateAsync(TGet objectToUpdate);
     }
 }

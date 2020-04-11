@@ -75,7 +75,7 @@ namespace litmanager_api.Controllers.V1
             var userType = _mapper.Map<UserType>(request);
 
             //Try to update the user and check if its successfull
-            var result = await _userTypeService.UpdateAsync(userTypeId, userType);
+            var result = await _userTypeService.UpdateAsync(userType);
             if (!result)
             {
                 return NotFound();

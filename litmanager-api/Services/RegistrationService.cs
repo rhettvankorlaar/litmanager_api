@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using litmanager_api.Contracts.V1.Requests.Registration;
 using litmanager_api.Domain;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -52,23 +53,11 @@ namespace litmanager_api.Services
             //Return the registration or null
             return await _context.Registrations.Include(_=>_.UserType).SingleOrDefaultAsync(_ => _.Id == idToGet);
         }
-        public async Task<bool> UpdateAsync(string idToGet, Registration objectToUpdate)
+        public async Task<bool> UpdateAsync(Registration objectToUpdate)
         {
-            //Check if the Registration exists
-            var registrationToUpdate = await GetAsync(idToGet);
-            if(registrationToUpdate == null)
-            {
-                return false;
-            }
-            
-            //Pass the update object the id required to update
-            objectToUpdate.Id = idToGet;
-            
             //Update and save to database
             _context.Registrations.Update(objectToUpdate);
             var updated = await _context.SaveChangesAsync();
-            
-            //return true if there are more than 0 changes
             return updated > 0;
         }
 
