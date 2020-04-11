@@ -1,4 +1,5 @@
 ﻿using litmanager_api.Domain;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -41,18 +42,8 @@ namespace litmanager_api.Services
             return await _context.UserTypes.SingleOrDefaultAsync(_ => _.Id == idToGet);
         }
 
-        public async Task<bool> UpdateAsync(Guid idToGet, UserType objectToUpdate)
+        public async Task<bool> UpdateAsync(UserType objectToUpdate)
         {
-            //Check if the UserType exists
-            var userTypeToUpdate = await GetAsync(idToGet);
-            if (userTypeToUpdate == null)
-            {
-                return false;
-            }
-
-            //Pass the update object the id required to update
-            objectToUpdate.Id = idToGet;
-
             //Update and save to database
             _context.UserTypes.Update(objectToUpdate);
             var updated = await _context.SaveChangesAsync();
@@ -75,6 +66,11 @@ namespace litmanager_api.Services
 
             //return true if there are more than 0 changes
             return removed > 0;
+        }
+
+        public Task<bool> PatchAsync(Guid idToPatch, JsonPatchDocument patchDocument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

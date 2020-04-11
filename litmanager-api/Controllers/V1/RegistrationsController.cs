@@ -105,7 +105,7 @@ namespace litmanager_api.Controllers.V1
             var registration = _mapper.Map<Registration>(request);
             
             //Try to update the user and check if its successfull
-            var result = await _registeredService.UpdateAsync(registrationId, registration);
+            var result = await _registeredService.UpdateAsync(registration);
             if (!result)
             {
                 return NotFound();

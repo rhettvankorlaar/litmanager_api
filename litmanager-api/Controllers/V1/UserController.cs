@@ -6,6 +6,7 @@ using litmanager_api.Contracts.V1.Responses.User;
 using litmanager_api.Domain;
 using litmanager_api.Mail;
 using litmanager_api.Services;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ namespace litmanager_api.Controllers.V1
             var user = _mapper.Map<User>(request);
 
             //Try to update the user and check if its successfull
-            var result = await _userService.UpdateAsync(userId, user);
+            var result = await _userService.UpdateAsync(user);
             if (!result)
             {
                 return NotFound();
@@ -106,168 +107,19 @@ namespace litmanager_api.Controllers.V1
             return Ok();
         }
 
-        [HttpPatch(ApiRoutes.User.PatchEmail)]
-        public async Task<IActionResult> PatchEmail([FromRoute]string userId, [FromBody]PatchRequest patch)
+        [HttpPatch(ApiRoutes.User.Patch)]
+        public async Task<IActionResult> PatchUser([FromRoute]string userId, [FromBody]JsonPatchDocument<User> patch)
         {
-            //Check if the User exists
             var user = await _userService.GetAsync(userId);
-            if (user == null)
+            patch.ApplyTo(user, ModelState);
+
+            var updated = await _userService.UpdateAsync(user);
+
+            if (!updated)
             {
                 return NotFound();
             }
-            //Update User with patch
-            user.Email = patch.Email;
-
-            //Update the User object and check if successful
-            if (await UpdateUser(userId, user) == false)
-            {
-                return BadRequest();
-            }
-            HandleEmailChange(user);
-            //return mapped GetAsync
-            return await GetAsync(userId);
-        }
-
-        [HttpPatch(ApiRoutes.User.PatchFirstName)]
-        public async Task<IActionResult> PatchFirstName([FromRoute]string userId, [FromBody]PatchRequest patch)
-        {
-            //Check if the User exists
-            var user = await _userService.GetAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            //Update User with patch
-            user.FirstName = patch.FirstName;
-
-            //Update the User object and check if successful
-            if (await UpdateUser(userId, user) == false)
-            {
-                return BadRequest();
-            }
-
-            //return mapped GetAsync
-            return await GetAsync(userId);
-        }
-
-        [HttpPatch(ApiRoutes.User.PatchLastName)]
-        public async Task<IActionResult> PatchLastName([FromRoute]string userId, [FromBody]PatchRequest patch)
-        {
-            //Check if the User exists
-            var user = await _userService.GetAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            //Update User with patch
-            user.LastName = patch.LastName;
-
-            //Update the User object and check if successful
-            if (await UpdateUser(userId, user) == false)
-            {
-                return BadRequest();
-            }
-
-            //return mapped GetAsync
-            return await GetAsync(userId);
-        }
-
-        [HttpPatch(ApiRoutes.User.PatchUserType)]
-        public async Task<IActionResult> PatchUserType([FromRoute]string userId, [FromBody]PatchRequest patch)
-        {
-            //Check if the User exists
-            var user = await _userService.GetAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            //Check if type exists
-            var type = await _userTypeService.GetAsync(patch.UserTypeId);
-            if (type == null)
-            {
-                return BadRequest();
-            }
-
-            //Update User with patch
-            user.UserTypeId = patch.UserTypeId;
-
-            //Update the User object and check if successful
-            if (await UpdateUser(userId, user) == false)
-            {
-                return BadRequest();
-            }
-
-            //return mapped GetAsync
-            return await GetAsync(userId);
-        }
-
-        [HttpPatch(ApiRoutes.User.PatchPassword)]
-        public async Task<IActionResult> PatchPassword([FromRoute]string userId, [FromBody]PatchPassword patch)
-        {
-            var result = await _userService.ChangePasswordAsync(userId, patch.Password);
-            if (!result)
-            {
-                return BadRequest();
-            }
-
-            //return mapped GetAsync
             return Ok();
-        }
-
-        [HttpPatch(ApiRoutes.User.PatchIsEnabled)]
-        public async Task<IActionResult> PatchIsEnabled([FromRoute]string userId, [FromBody]PatchRequest patch)
-        {
-            //Check if the User exists
-            var user = await _userService.GetAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            //Update User with patch
-            user.IsEnabled = patch.IsEnabled;
-
-            //Update the User object and check if successful
-            if (await UpdateUser(userId, user) == false)
-            {
-                return BadRequest();
-            }
-
-            //return mapped GetAsync
-            return await GetAsync(userId);
-        }
-
-        [HttpPatch(ApiRoutes.User.PatchIsAdmin)]
-        public async Task<IActionResult> PatchIsAdmin([FromRoute]string userId, [FromBody]PatchRequest patch)
-        {
-            //Check if the User exists
-            var user = await _userService.GetAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            //Update User with patch
-            user.IsAdmin = patch.IsAdmin;
-
-            //Update the User object and check if successful
-            if (await UpdateUser(userId, user) == false)
-            {
-                return BadRequest();
-            }
-
-            //return mapped GetAsync
-            return await GetAsync(userId);
-        }
-
-        private async Task<bool> UpdateUser(string userId, User user)
-        {
-            //Try to update user
-            var result = await _userService.UpdateAsync(userId, user);
-            if (!result)
-            {
-                return false;
-            }
-            return true;
         }
 
         private void HandleEmailChange(User user)

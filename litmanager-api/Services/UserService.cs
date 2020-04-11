@@ -1,10 +1,12 @@
 ﻿using litmanager_api.Contracts.V1.Requests.User;
 using litmanager_api.Domain;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace litmanager_api.Services
 {
@@ -43,27 +45,11 @@ namespace litmanager_api.Services
             //Return a list of all users
             return await _context.Users.Include(_ => _.UserType).ToListAsync();
         }
-        public async Task<bool> UpdateAsync(string idToGet, User objectToUpdate)
+        public async Task<bool> UpdateAsync(User objectToUpdate)
         {
-            //Check if the User exists
-            var userToUpdate = await GetAsync(idToGet);
-            if (userToUpdate == null)
-            {
-                return false;
-            }
+            _context.Update(objectToUpdate);
 
-            //Pass the update object the id required to update
-            objectToUpdate.Id = idToGet;
-
-            //Password should stay the same
-            objectToUpdate.PasswordHash = userToUpdate.PasswordHash;
-
-
-            //Update and save to database
-            _context.Users.Update(objectToUpdate);
             var updated = await _context.SaveChangesAsync();
-
-            //return true if there are more than 0 changes
             return updated > 0;
         }
         public async Task<bool> DeleteAsync(string idToGet)

@@ -10,6 +10,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using litmanager_api.Installers;
 using litmanager_api.Options;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace litmanager_api
 {
@@ -22,9 +25,26 @@ namespace litmanager_api
 
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
-        {
+        { 
             services.InstallServicesInAssembly(Configuration);
         }
+
+        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        {
+            var builder = new ServiceCollection()
+                .AddLogging()
+                .AddMvc()
+                .AddNewtonsoftJson()
+                .Services.BuildServiceProvider();
+
+            return builder
+                .GetRequiredService<IOptions<MvcOptions>>()
+                .Value
+                .InputFormatters
+                .OfType<NewtonsoftJsonPatchInputFormatter>()
+                .First();
+        }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

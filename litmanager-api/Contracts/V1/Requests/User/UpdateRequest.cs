@@ -14,6 +14,8 @@ namespace litmanager_api.Contracts.V1.Requests.User
 
         public string LastName { get; set; }
 
+        public DateTime DateOfBirth { get; set; }
+
         public Guid UserTypeId { get; set; }
 
         public bool IsEnabled { get; set; }
