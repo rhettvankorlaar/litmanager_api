@@ -66,7 +66,7 @@ namespace litmanager_api.Controllers.V1
             //Send mail with ability to confirm email.
             SendMail(receiver, "REGISTERED", "content");
 
-            return Created(locationUri, registration);
+            return Created(locationUri, await _registeredService.GetAsync(registration.Id));
         }
 
         [HttpGet(ApiRoutes.Registration.Get)]
