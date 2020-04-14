@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using litmanager_api.Contracts.V1;
-using litmanager_api.Contracts.V1.Requests;
 using litmanager_api.Contracts.V1.Requests.User;
 using litmanager_api.Contracts.V1.Responses.User;
 using litmanager_api.Domain;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace litmanager_api.Controllers.V1
@@ -46,8 +44,8 @@ namespace litmanager_api.Controllers.V1
                 return NoContent();
             }
             //return location and mapped object
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.User.Get.Replace("{userId}", request.Id);
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}/";
+            var locationUri = baseUrl + ApiRoutes.User.Get.Replace("{userId}", request.Id);
             return Created(locationUri, _mapper.Map<GetResponse>(request));
         }
 
@@ -121,26 +119,6 @@ namespace litmanager_api.Controllers.V1
             }
             return Ok();
         }
-
-        private void HandleEmailChange(User user)
-        {
-            var receiver = new Receiver
-            {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
-            //send mail with verifytoken
-            try
-            {
-                _mail.SendMail(receiver, "EMAIL CHANGED", "content");
-            }
-            catch
-            {
-                //Error
-            }
-        }
-
     }
 
 

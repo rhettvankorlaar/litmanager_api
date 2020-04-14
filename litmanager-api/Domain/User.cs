@@ -16,6 +16,8 @@ namespace litmanager_api.Domain
         public string LastName { get; set; }
         public string PasswordHash { get; set; }
         public bool IsEnabled { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
         public bool IsAdmin { get; set; }
         public Guid UserTypeId { get; set; }
 

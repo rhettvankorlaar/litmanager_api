@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using litmanager_api.Contracts.V1.Requests.Registration;
 using litmanager_api.Domain;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace litmanager_api.Services

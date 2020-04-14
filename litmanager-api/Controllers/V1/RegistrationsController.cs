@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using litmanager_api.Domain;
-using Microsoft.EntityFrameworkCore.Internal;
 using litmanager_api.Services;
 using litmanager_api.Contracts.V1;
 using litmanager_api.Contracts.V1.Requests.Registration;
@@ -54,8 +51,8 @@ namespace litmanager_api.Controllers.V1
                 return BadRequest();
             }
             //Get the location of the created object and send it with the mapped object
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Registration.Get.Replace("{registrationId}", request.Id);
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}/";
+            var locationUri = baseUrl + ApiRoutes.Registration.Get.Replace("{registrationId}", request.Id);
             var registration = _mapper.Map<GetResponse>(request);
 
             var receiver = new Receiver

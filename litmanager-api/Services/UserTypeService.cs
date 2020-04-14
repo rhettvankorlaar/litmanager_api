@@ -1,9 +1,7 @@
 ﻿using litmanager_api.Domain;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace litmanager_api.Services
@@ -66,11 +64,6 @@ namespace litmanager_api.Services
 
             //return true if there are more than 0 changes
             return removed > 0;
-        }
-
-        public Task<bool> PatchAsync(Guid idToPatch, JsonPatchDocument patchDocument)
-        {
-            throw new NotImplementedException();
         }
     }
 }
