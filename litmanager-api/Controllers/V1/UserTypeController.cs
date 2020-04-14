@@ -3,7 +3,6 @@ using litmanager_api.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using litmanager_api.Contracts.V1.Requests.UserType;
 using litmanager_api.Services;
@@ -37,8 +36,8 @@ namespace litmanager_api.Controllers.V1
                 return NoContent();
             }
             //return location and mapped object
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.UserType.Get.Replace("{userTypeId}", userType.Id.ToString());
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}/";
+            var locationUri = baseUrl + ApiRoutes.UserType.Get.Replace("{userTypeId}", userType.Id.ToString());
             return Created(locationUri, _mapper.Map<GetResponse>(userType));
         }
 

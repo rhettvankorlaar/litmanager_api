@@ -1,12 +1,8 @@
-﻿using litmanager_api.Contracts.V1.Requests.User;
-using litmanager_api.Domain;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using litmanager_api.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace litmanager_api.Services
 {
